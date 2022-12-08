@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import * as esbuild from 'esbuild-wasm'
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin'
+import { fetchPlugin } from './plugins/fetch-plugin'
 
 const App = () => {
   const [input, setInput] = useState('')
@@ -15,7 +16,7 @@ const App = () => {
     // Go to Public folder and fetch esbuild file
     ref.current = await esbuild.startService({
       worker: true,
-      wasmURL: '/esbuild.wasm'
+      wasmURL: 'https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm'
     })
   }
 
@@ -26,7 +27,7 @@ const App = () => {
       entryPoints: ['index.js'],
       bundle: true,
       write: false,
-      plugins: [unpkgPathPlugin(input)],
+      plugins: [unpkgPathPlugin(), fetchPlugin(input)],
       define: {
         'process.env.NODE_ENV': '"production"',
         global: 'window'
